@@ -9,8 +9,19 @@ import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-sw
 interface Props {
   isRollMode?: boolean
   student: Person
+  allCount: number
+  presentCount: number
+  lateCount: number
+  absentCount: number
+  setAllCount: (action: Props, value?: number) => void
+  setPresentCount: (action: Props, value?: number) => void
+  setLateCount: (action: Props, value?: number) => void
+  setAbsentCount: (action: Props, value?: number) => void
 }
-export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+export const StudentListTile: React.FC<Props> = ({ isRollMode, student,
+  allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
+  setAbsentCount, }) => {
+
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
@@ -19,7 +30,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher />
+          <RollStateSwitcher allCount={allCount} lateCount={lateCount} absentCount={absentCount} presentCount={presentCount} setPresentCount={setPresentCount} setLateCount={setLateCount} setAbsentCount={setAbsentCount} setAllCount={setAllCount} />
         </S.Roll>
       )}
     </S.Container>

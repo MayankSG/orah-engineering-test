@@ -8,10 +8,15 @@ export type ActiveRollAction = "filter" | "exit"
 interface Props {
   isActive: boolean
   onItemClick: (action: ActiveRollAction, value?: string) => void
+  allCount: number
+  presentCount: number
+  lateCount: number
+  absentCount: number
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
-  const { isActive, onItemClick } = props
+  const { isActive, onItemClick, allCount, presentCount,
+    lateCount, absentCount, } = props
 
   return (
     <S.Overlay isActive={isActive}>
@@ -20,10 +25,10 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
         <div>
           <RollStateList
             stateList={[
-              { type: "all", count: 0 },
-              { type: "present", count: 0 },
-              { type: "late", count: 0 },
-              { type: "absent", count: 0 },
+              { type: "all", count: allCount },
+              { type: "present", count: presentCount },
+              { type: "late", count: lateCount },
+              { type: "absent", count: absentCount },
             ]}
           />
           <div style={{ marginTop: Spacing.u6 }}>

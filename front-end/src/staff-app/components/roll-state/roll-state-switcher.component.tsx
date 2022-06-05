@@ -7,14 +7,33 @@ interface Props {
   size?: number
   onStateChange?: (newState: RolllStateType) => void
 }
-export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange }) => {
+export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange, allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
+  setAbsentCount, }) => {
   const [rollState, setRollState] = useState(initialState)
 
   const nextState = () => {
     const states: RolllStateType[] = ["present", "late", "absent"]
-    if (rollState === "unmark" || rollState === "absent") return states[0]
+    if (rollState === "unmark" || rollState === "absent") {
+      if (rollState === "absent") {
+        setAbsentCount(absentCount - 1)
+      } else {
+        setAllCount(allCount + 1)
+      }
+      setPresentCount(presentCount + 1)
+      return states[0]
+    }
     const matchingIndex = states.findIndex((s) => s === rollState)
-    return matchingIndex > -1 ? states[matchingIndex + 1] : states[0]
+    if (matchingIndex === 0) {
+      setPresentCount(presentCount - 1)
+      setLateCount(lateCount + 1)
+      return states[matchingIndex + 1]
+    }
+    if (matchingIndex === 1) {
+      setLateCount(lateCount - 1)
+      setAbsentCount(absentCount + 1)
+      return states[matchingIndex + 1]
+    }
+    return states[0]
   }
 
   const onClick = () => {

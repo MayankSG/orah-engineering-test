@@ -17,6 +17,10 @@ export const HomeBoardPage: React.FC = () => {
   const [sortStudentsByLastName, setSortStudentsByLastName] = useState('asc')
   const [students, setStudents] = useState([])
 
+  const [allCount, setAllCount] = useState(0)
+  const [presentCount, setPresentCount] = useState(0)
+  const [lateCount, setLateCount] = useState(0)
+  const [absentCount, setAbsentCount] = useState(0)
 
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
 
@@ -88,7 +92,16 @@ export const HomeBoardPage: React.FC = () => {
         {loadState === "loaded" && students && (
           <>
             {students && students.map((s) => (
-              <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
+              <StudentListTile
+                allCount={allCount}
+                presentCount={presentCount}
+                lateCount={lateCount}
+                absentCount={absentCount}
+                setAllCount={setAllCount}
+                setPresentCount={setPresentCount}
+                setLateCount={setLateCount}
+                setAbsentCount={setAbsentCount}
+                key={s.id} isRollMode={isRollMode} student={s} />
             ))}
           </>
         )}
@@ -99,7 +112,14 @@ export const HomeBoardPage: React.FC = () => {
           </CenteredContainer>
         )}
       </S.PageContainer>
-      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} />
+      <ActiveRollOverlay
+        allCount={allCount}
+        presentCount={presentCount}
+        lateCount={lateCount}
+        absentCount={absentCount}
+        isActive={isRollMode}
+        onItemClick={onActiveRollAction}
+      />
     </>
   )
 }
