@@ -8,8 +8,14 @@ interface Props {
   onStateChange?: (newState: RolllStateType) => void
 }
 export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange, allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
-  setAbsentCount, }) => {
+  setAbsentCount, updatedStudents, setUpdatedStudents, student }) => {
   const [rollState, setRollState] = useState(initialState)
+
+  const updateStudentRollDetail = (state) => {
+    let updatedStudentsRef = updatedStudents
+    updatedStudentsRef.find((item) => item.id === student.id)['roll'] = state
+    setUpdatedStudents(updatedStudentsRef)
+  }
 
   const nextState = () => {
     const states: RolllStateType[] = ["present", "late", "absent"]
@@ -19,6 +25,7 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
       } else {
         setAllCount(allCount + 1)
       }
+      updateStudentRollDetail('present')
       setPresentCount(presentCount + 1)
       return states[0]
     }
@@ -26,11 +33,13 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
     if (matchingIndex === 0) {
       setPresentCount(presentCount - 1)
       setLateCount(lateCount + 1)
+      updateStudentRollDetail('late')
       return states[matchingIndex + 1]
     }
     if (matchingIndex === 1) {
       setLateCount(lateCount - 1)
       setAbsentCount(absentCount + 1)
+      updateStudentRollDetail('absent')
       return states[matchingIndex + 1]
     }
     return states[0]
@@ -44,5 +53,5 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
     }
   }
 
-  return <RollStateIcon type={rollState} size={size} onClick={onClick} />
+  return <RollStateIcon type={student.roll || rollState} size={size} onClick={onClick} />
 }

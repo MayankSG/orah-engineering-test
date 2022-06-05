@@ -13,6 +13,8 @@ interface Props {
   presentCount: number
   lateCount: number
   absentCount: number
+  updatedStudents: []
+  setUpdatedStudents: (action: Props, value?: []) => void
   setAllCount: (action: Props, value?: number) => void
   setPresentCount: (action: Props, value?: number) => void
   setLateCount: (action: Props, value?: number) => void
@@ -20,7 +22,7 @@ interface Props {
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student,
   allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
-  setAbsentCount, }) => {
+  setAbsentCount, updatedStudents, setUpdatedStudents }) => {
 
   return (
     <S.Container>
@@ -30,7 +32,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student,
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher allCount={allCount} lateCount={lateCount} absentCount={absentCount} presentCount={presentCount} setPresentCount={setPresentCount} setLateCount={setLateCount} setAbsentCount={setAbsentCount} setAllCount={setAllCount} />
+          <RollStateSwitcher student={student} allCount={allCount} lateCount={lateCount} absentCount={absentCount} presentCount={presentCount} setPresentCount={setPresentCount} setLateCount={setLateCount} setAbsentCount={setAbsentCount} setAllCount={setAllCount} updatedStudents={updatedStudents} setUpdatedStudents={setUpdatedStudents} />
         </S.Roll>
       )}
     </S.Container>

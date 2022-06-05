@@ -22,6 +22,8 @@ export const HomeBoardPage: React.FC = () => {
   const [lateCount, setLateCount] = useState(0)
   const [absentCount, setAbsentCount] = useState(0)
 
+  const [updatedStudents, setUpdatedStudents] = useState([])
+
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
 
   useEffect(() => {
@@ -31,9 +33,9 @@ export const HomeBoardPage: React.FC = () => {
   useEffect(() => {
     if (data) {
       setStudents(data.students)
+      setUpdatedStudents(data.students)
     }
   }, [data])
-
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
       setIsRollMode(true)
@@ -72,6 +74,14 @@ export const HomeBoardPage: React.FC = () => {
     }
   }
 
+  const handleRollFilter = (param) => {
+    if (param === 'all') {
+      setStudents(updatedStudents)
+    } else {
+      setStudents(updatedStudents.filter((item) => item.roll === param))
+    }
+  }
+
   const onActiveRollAction = (action: ActiveRollAction) => {
     if (action === "exit") {
       setIsRollMode(false)
@@ -101,6 +111,8 @@ export const HomeBoardPage: React.FC = () => {
                 setPresentCount={setPresentCount}
                 setLateCount={setLateCount}
                 setAbsentCount={setAbsentCount}
+                updatedStudents={updatedStudents}
+                setUpdatedStudents={setUpdatedStudents}
                 key={s.id} isRollMode={isRollMode} student={s} />
             ))}
           </>
@@ -119,6 +131,7 @@ export const HomeBoardPage: React.FC = () => {
         absentCount={absentCount}
         isActive={isRollMode}
         onItemClick={onActiveRollAction}
+        handleRollFilter={handleRollFilter}
       />
     </>
   )

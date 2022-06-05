@@ -12,11 +12,12 @@ interface Props {
   presentCount: number
   lateCount: number
   absentCount: number
+  handleRollFilter: (action: Props, value?: string) => void
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
   const { isActive, onItemClick, allCount, presentCount,
-    lateCount, absentCount, } = props
+    lateCount, absentCount, handleRollFilter } = props
 
   return (
     <S.Overlay isActive={isActive}>
@@ -30,6 +31,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
               { type: "late", count: lateCount },
               { type: "absent", count: absentCount },
             ]}
+            handleRollFilter={handleRollFilter}
           />
           <div style={{ marginTop: Spacing.u6 }}>
             <Button color="inherit" onClick={() => onItemClick("exit")}>
