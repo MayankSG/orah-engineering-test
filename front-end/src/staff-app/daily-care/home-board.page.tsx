@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, HtmlHTMLAttributes } from "react"
 import { useNavigate } from "react-router-dom"
 
 import styled from "styled-components"
@@ -13,19 +13,23 @@ import { StudentListTile } from "staff-app/components/student-list-tile/student-
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
 import { faSort } from "@fortawesome/free-solid-svg-icons"
 
+interface SortProps {
+  item: string
+}
+
 export const HomeBoardPage: React.FC = () => {
-  const [isRollMode, setIsRollMode] = useState(false)
-  const [sortStudentsByFirstName, setSortStudentsByFirstName] = useState('asc')
-  const [sortStudentsByLastName, setSortStudentsByLastName] = useState('asc')
-  const [students, setStudents] = useState([])
+  const [isRollMode, setIsRollMode] = useState<boolean>(false)
+  const [sortStudentsByFirstName, setSortStudentsByFirstName] = useState<string>('asc')
+  const [sortStudentsByLastName, setSortStudentsByLastName] = useState<string>('asc')
+  const [students, setStudents] = useState<Person[]>([])
 
-  const [allCount, setAllCount] = useState(0)
-  const [presentCount, setPresentCount] = useState(0)
-  const [lateCount, setLateCount] = useState(0)
-  const [absentCount, setAbsentCount] = useState(0)
+  const [allCount, setAllCount] = useState<number>(0)
+  const [presentCount, setPresentCount] = useState<number>(0)
+  const [lateCount, setLateCount] = useState<number>(0)
+  const [absentCount, setAbsentCount] = useState<number>(0)
 
-  const [updatedStudents, setUpdatedStudents] = useState([])
-  const [activeSort, setActiveSort] = useState('')
+  const [updatedStudents, setUpdatedStudents] = useState<Person[]>([])
+  const [activeSort, setActiveSort] = useState<string>('')
 
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [saveRolls, saveRollData, loadRollState] = useApi<{ updatedStudents: Person[] }>({ url: "save-roll" })
@@ -41,6 +45,7 @@ export const HomeBoardPage: React.FC = () => {
       setUpdatedStudents(data.students)
     }
   }, [data])
+
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
       setIsRollMode(true)
@@ -54,8 +59,10 @@ export const HomeBoardPage: React.FC = () => {
       setActiveSort('last_name')
     }
   }
+
   const sortStudents = (item: string) => {
-    let firstParam, secondParam
+    let firstParam: number, secondParam: number
+
     if (item == 'first_name') {
       firstParam = sortStudentsByFirstName == 'asc' ? 1 : -1
       secondParam = sortStudentsByFirstName == 'asc' ? -1 : 1
@@ -64,8 +71,9 @@ export const HomeBoardPage: React.FC = () => {
       secondParam = sortStudentsByLastName == 'asc' ? -1 : 1
     }
 
-    let sortedStudents = students.sort((a: {}, b: {}) => a[item] > b[item] ? firstParam : secondParam)
+    let sortedStudents = students.sort((a: any, b: any) => a[item] > b[item] ? firstParam : secondParam)
     setStudents(sortedStudents)
+
     if (item == 'first_name') {
       if (sortStudentsByFirstName == 'asc') {
         setSortStudentsByFirstName('desc')
@@ -81,7 +89,7 @@ export const HomeBoardPage: React.FC = () => {
     }
   }
 
-  const handleRollFilter = (param) => {
+  const handleRollFilter = (param: string) => {
     if (param === 'all') {
       setStudents(updatedStudents)
     } else {
@@ -90,10 +98,7 @@ export const HomeBoardPage: React.FC = () => {
   }
 
   const handleSaveRoll = () => {
-    let updatedParams = updatedStudents.map((item, i) => {
-      return { student_id: item.id, roll_state: item.roll }
-    })
-    saveRolls(updatedParams)
+    saveRolls({ student_roll_states: updatedStudents })
     navigate("/staff/activity")
   }
 
@@ -158,12 +163,16 @@ export const HomeBoardPage: React.FC = () => {
 type ToolbarAction = "roll" | "sort-firstName" | "sort-lastName"
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
+  setStudents: (students: Person[]) => void
+  data: { students: Person[] } | undefined
+  activeSort: string
 }
+
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const { onItemClick, setStudents, data, activeSort } = props
   const [search, setSearch] = useState('')
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearch(value)
     const searchResult = data.students && data.students.filter(item => item?.first_name?.toUpperCase().includes(value.toUpperCase()) || item?.last_name?.toUpperCase().includes(value.toUpperCase()))

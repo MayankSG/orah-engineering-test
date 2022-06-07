@@ -13,13 +13,14 @@ interface Props {
   presentCount: number
   lateCount: number
   absentCount: number
-  updatedStudents: []
-  setUpdatedStudents: (action: Props, value?: []) => void
-  setAllCount: (action: Props, value?: number) => void
-  setPresentCount: (action: Props, value?: number) => void
-  setLateCount: (action: Props, value?: number) => void
-  setAbsentCount: (action: Props, value?: number) => void
+  updatedStudents: Person[]
+  setUpdatedStudents: (students: Person[]) => void
+  setAllCount: (count: number) => void
+  setPresentCount: (count: number) => void
+  setLateCount: (count: number) => void
+  setAbsentCount: (count: number) => void
 }
+
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student,
   allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
   setAbsentCount, updatedStudents, setUpdatedStudents }) => {

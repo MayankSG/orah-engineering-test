@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Spacing } from "shared/styles/styles"
 import { useApi } from "shared/hooks/use-api"
 import { Person } from "shared/models/person"
-import BasicTable from "./table"
+import CollapsibleTable from "./table"
 
 export const ActivityPage: React.FC = () => {
   const [getActivities, getRollData, loadGetRollState] = useApi<{ rollStudents: Person[] }>({ url: "get-activities" })
@@ -14,10 +14,7 @@ export const ActivityPage: React.FC = () => {
 
   return (
     <S.Container>
-      <S.Heading>
-        Activity Page
-      </S.Heading>
-      <BasicTable data={getRollData && getRollData.activity} />
+      <CollapsibleTable data={getRollData && getRollData.activity} />
     </S.Container>
   )
 

@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
 
-export type ActiveRollAction = "filter" | "exit"
+export type ActiveRollAction = "filter" | "exit" | "complete"
 interface Props {
   isActive: boolean
   onItemClick: (action: ActiveRollAction, value?: string) => void
@@ -12,12 +12,11 @@ interface Props {
   presentCount: number
   lateCount: number
   absentCount: number
-  handleRollFilter: (action: Props, value?: string) => void
+  handleRollFilter: (value?: string) => void
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
-  const { isActive, onItemClick, allCount, presentCount,
-    lateCount, absentCount, handleRollFilter } = props
+  const { isActive, onItemClick, allCount, presentCount, lateCount, absentCount, handleRollFilter } = props
 
   return (
     <S.Overlay isActive={isActive}>
