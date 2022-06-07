@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { Person } from "shared/models/person"
 import { RolllStateType } from "shared/models/roll"
 import { RollStateIcon } from "staff-app/components/roll-state/roll-state-icon.component"
 
@@ -6,12 +7,23 @@ interface Props {
   initialState?: RolllStateType
   size?: number
   onStateChange?: (newState: RolllStateType) => void
+  allCount: number
+  presentCount: number
+  lateCount: number
+  absentCount: number
+  setAllCount: (value: number) => void
+  setPresentCount: (value: number) => void
+  setLateCount: (value: number) => void
+  setAbsentCount: (value: number) => void
+  updatedStudents: Person[]
+  setUpdatedStudents: (students: Person[]) => void
+  student: Person,
 }
 export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange, allCount, presentCount, lateCount, absentCount, setAllCount, setPresentCount, setLateCount,
   setAbsentCount, updatedStudents, setUpdatedStudents, student }) => {
-  const [rollState, setRollState] = useState(initialState)
+  const [rollState, setRollState] = useState<RolllStateType>(initialState)
 
-  const updateStudentRollDetail = (state) => {
+  const updateStudentRollDetail = (state: RolllStateType) => {
     let updatedStudentsRef = updatedStudents
     updatedStudentsRef.find((item) => item.id === student.id)['roll'] = state
     setUpdatedStudents(updatedStudentsRef)

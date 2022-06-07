@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -16,6 +16,8 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { Person } from 'shared/models/person';
 import moment from 'moment';
 import { RollStateIcon } from 'staff-app/components/roll-state/roll-state-icon.component';
+import { RolllStateType } from 'shared/models/roll';
+import { Activity } from 'shared/models/activity';
 
 const useRowStyles = makeStyles({
   root: {
@@ -25,15 +27,15 @@ const useRowStyles = makeStyles({
   },
 });
 
-function Row(props) {
+function Row(props: { row: { id: number, name: string, completed_at: Date, student_roll_states: any } }) {
   const { row } = props;
   const classes = useRowStyles();
 
-  const [activeTable, setActiveTable] = React.useState('');
+  const [activeTable, setActiveTable] = useState<number>(0);
 
-  const toggle = (openTable) => {
-    if (openTable == activeTable) {
-      return setActiveTable('');
+  const toggle = (openTable: number) => {
+    if (openTable === activeTable) {
+      return setActiveTable(0);
     }
     setActiveTable(openTable)
   }
@@ -68,7 +70,7 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.student_roll_states.map((rollRow) => (
+                  {row.student_roll_states.map((rollRow: { id: number, first_name: string, last_name: string, roll: RolllStateType }) => (
                     <TableRow key={rollRow.id}>
                       <TableCell>{rollRow.id}</TableCell>
                       <TableCell component="th" scope="row">
@@ -90,7 +92,7 @@ function Row(props) {
 
 export default function CollapsibleTable({
   data
-}) {
+}: { data: Activity[] }) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">

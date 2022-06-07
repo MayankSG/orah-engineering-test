@@ -6,7 +6,7 @@ import { Person } from "shared/models/person"
 import CollapsibleTable from "./table"
 
 export const ActivityPage: React.FC = () => {
-  const [getActivities, getRollData, loadGetRollState] = useApi<{ rollStudents: Person[] }>({ url: "get-activities" })
+  const [getActivities, getRollData, loadGetRollState] = useApi({ url: "get-activities" })
 
   useEffect(() => {
     void getActivities()

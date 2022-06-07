@@ -1,9 +1,12 @@
+import { Activity } from "./activity"
+import { RolllStateType } from "./roll"
+
 export interface Person {
   id: number
   first_name: string
   last_name: string
   photo_url?: string
-  roll?: string
+  roll?: RolllStateType
 }
 
 export const PersonHelper = {

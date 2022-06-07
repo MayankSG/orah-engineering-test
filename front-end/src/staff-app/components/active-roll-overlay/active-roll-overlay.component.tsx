@@ -5,17 +5,17 @@ import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
 
 export type ActiveRollAction = "filter" | "exit" | "complete"
-interface Props {
+interface ActiveRollOverlayProps {
   isActive: boolean
   onItemClick: (action: ActiveRollAction, value?: string) => void
   allCount: number
   presentCount: number
   lateCount: number
   absentCount: number
-  handleRollFilter: (value?: string) => void
+  handleRollFilter: (value: string | undefined) => void
 }
 
-export const ActiveRollOverlay: React.FC<Props> = (props) => {
+export const ActiveRollOverlay: React.FC<ActiveRollOverlayProps> = (props) => {
   const { isActive, onItemClick, allCount, presentCount, lateCount, absentCount, handleRollFilter } = props
 
   return (

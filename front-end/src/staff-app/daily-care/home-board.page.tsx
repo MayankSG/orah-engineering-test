@@ -89,7 +89,7 @@ export const HomeBoardPage: React.FC = () => {
     }
   }
 
-  const handleRollFilter = (param: string) => {
+  const handleRollFilter = (param: string | undefined) => {
     if (param === 'all') {
       setStudents(updatedStudents)
     } else {
@@ -175,7 +175,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearch(value)
-    const searchResult = data.students && data.students.filter(item => item?.first_name?.toUpperCase().includes(value.toUpperCase()) || item?.last_name?.toUpperCase().includes(value.toUpperCase()))
+    const searchResult = data?.students && data.students.filter(item => item?.first_name?.toUpperCase().includes(value.toUpperCase()) || item?.last_name?.toUpperCase().includes(value.toUpperCase())) || []
     setStudents(searchResult)
   }
 
