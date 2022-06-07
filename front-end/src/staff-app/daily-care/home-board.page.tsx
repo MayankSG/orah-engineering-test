@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+
 import styled from "styled-components"
 import Button from "@material-ui/core/ButtonBase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -9,7 +11,7 @@ import { Person } from "shared/models/person"
 import { useApi } from "shared/hooks/use-api"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
-import { faCoffee, faSort } from "@fortawesome/free-solid-svg-icons"
+import { faSort } from "@fortawesome/free-solid-svg-icons"
 
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
@@ -23,8 +25,11 @@ export const HomeBoardPage: React.FC = () => {
   const [absentCount, setAbsentCount] = useState(0)
 
   const [updatedStudents, setUpdatedStudents] = useState([])
+  const [activeSort, setActiveSort] = useState('')
 
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
+  const [saveRolls, saveRollData, loadRollState] = useApi<{ updatedStudents: Person[] }>({ url: "save-roll" })
+  const navigate = useNavigate();
 
   useEffect(() => {
     void getStudents()
@@ -41,10 +46,12 @@ export const HomeBoardPage: React.FC = () => {
       setIsRollMode(true)
     }
     if (action === "sort-firstName") {
+      setActiveSort('first_name')
       sortStudents('first_name')
     }
     if (action === "sort-lastName") {
       sortStudents('last_name')
+      setActiveSort('last_name')
     }
   }
   const sortStudents = (item: string) => {
@@ -82,16 +89,27 @@ export const HomeBoardPage: React.FC = () => {
     }
   }
 
+  const handleSaveRoll = () => {
+    let updatedParams = updatedStudents.map((item, i) => {
+      return { student_id: item.id, roll_state: item.roll }
+    })
+    saveRolls(updatedParams)
+    navigate("/staff/activity")
+  }
+
   const onActiveRollAction = (action: ActiveRollAction) => {
     if (action === "exit") {
       setIsRollMode(false)
+    }
+    if (action === "complete") {
+      handleSaveRoll()
     }
   }
 
   return (
     <>
       <S.PageContainer>
-        <Toolbar data={data} setStudents={setStudents} onItemClick={onToolbarAction} />
+        <Toolbar activeSort={activeSort} data={data} setStudents={setStudents} onItemClick={onToolbarAction} />
 
         {loadState === "loading" && (
           <CenteredContainer>
@@ -142,7 +160,7 @@ interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
 }
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const { onItemClick, setStudents, data } = props
+  const { onItemClick, setStudents, data, activeSort } = props
   const [search, setSearch] = useState('')
 
   const handleSearch = (e) => {
@@ -154,11 +172,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
 
   return (
     <S.ToolbarContainer>
-      <div onClick={() => onItemClick("sort-firstName")}>First Name <FontAwesomeIcon icon={faSort} size="1x" /></div>
-      <div onClick={() => onItemClick("sort-lastName")}>Last Name <FontAwesomeIcon icon={faSort} size="1x" /></div>
-      <div><input placeholder="search.." type='text' onChange={(e) => handleSearch(e)} value={search} name="search" /></div>
+      <div onClick={() => onItemClick("sort-firstName")} style={{ color: (activeSort == 'first_name') ? 'yellow' : '' }}>First Name <FontAwesomeIcon icon={faSort} size="1x" /></div>
+      <div onClick={() => onItemClick("sort-lastName")} style={{ color: (activeSort == 'last_name') ? 'yellow' : '' }}>Last Name <FontAwesomeIcon icon={faSort} size="1x" /></div>
+      <S.Input placeholder="search.." type='text' onChange={(e) => handleSearch(e)} value={search} name="search" ></S.Input>
       <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
-    </S.ToolbarContainer>
+    </S.ToolbarContainer >
   )
 }
 
@@ -178,6 +196,13 @@ const S = {
     padding: 6px 14px;
     font-weight: ${FontWeight.strong};
     border-radius: ${BorderRadius.default};
+  `,
+  Input: styled.input`
+  width: 30%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
   `,
   Button: styled(Button)`
     && {
