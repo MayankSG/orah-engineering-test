@@ -14,10 +14,9 @@ export const ActivityPage: React.FC = () => {
 
   return (
     <S.Container>
-      <CollapsibleTable data={getRollData && getRollData.activity} />
+      <CollapsibleTable loadGetRollState={loadGetRollState} data={getRollData && getRollData.activity} />
     </S.Container>
   )
-
 }
 
 const S = {

@@ -13,11 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { Person } from 'shared/models/person';
 import moment from 'moment';
 import { RollStateIcon } from 'staff-app/components/roll-state/roll-state-icon.component';
 import { RolllStateType } from 'shared/models/roll';
 import { Activity } from 'shared/models/activity';
+import { CenteredContainer } from 'shared/components/centered-container/centered-container.component';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const useRowStyles = makeStyles({
   root: {
@@ -27,18 +28,9 @@ const useRowStyles = makeStyles({
   },
 });
 
-function Row(props: { row: { id: number, name: string, completed_at: Date, student_roll_states: any } }) {
-  const { row } = props;
+function Row(props: { toggle: (openTable: number) => void, activeTable: number, row: { id: number, name: string, completed_at: Date, student_roll_states: any } }) {
+  const { row, activeTable, toggle } = props;
   const classes = useRowStyles();
-
-  const [activeTable, setActiveTable] = useState<number>(0);
-
-  const toggle = (openTable: number) => {
-    if (openTable === activeTable) {
-      return setActiveTable(0);
-    }
-    setActiveTable(openTable)
-  }
 
   return (
     <React.Fragment>
@@ -91,8 +83,17 @@ function Row(props: { row: { id: number, name: string, completed_at: Date, stude
 }
 
 export default function CollapsibleTable({
-  data
-}: { data: Activity[] }) {
+  data, loadGetRollState
+}: { data: Activity[], loadGetRollState: string }) {
+  const [activeTable, setActiveTable] = useState<number>(0);
+
+  const toggle = (openTable: number) => {
+    if (openTable === activeTable) {
+      return setActiveTable(0);
+    }
+    setActiveTable(openTable)
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -103,12 +104,22 @@ export default function CollapsibleTable({
             <TableCell style={{ color: '#fff' }} align="right">Date</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {data && data.map((row: any) => (
-            <Row key={row.name} row={row.entity} />
-          ))}
-        </TableBody>
+        {
+          loadGetRollState === "loaded" && (
+            <TableBody>
+              {data && data.map((row: any) => (
+                <Row toggle={toggle} activeTable={activeTable} key={row.name} row={row.entity} />
+              ))}
+            </TableBody>
+          )}
       </Table>
+      {loadGetRollState === "loading" && (
+        <div style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <CenteredContainer>
+            <FontAwesomeIcon icon="spinner" size="2x" spin />
+          </CenteredContainer>
+        </div>
+      )}
     </TableContainer>
   );
 }
